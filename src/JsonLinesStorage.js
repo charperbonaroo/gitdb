@@ -30,10 +30,10 @@ class JsonLinesStorage {
 
   async readAll() {
     try {
-      return (await fs.promises.readFile(this.#path, "utf-8"))
+      return lodash.sortBy((await fs.promises.readFile(this.#path, "utf-8"))
         .trimEnd()
         .split(/\n/)
-        .map((_) => JSON.parse(_))
+        .map((_) => JSON.parse(_)), this.#sortFn)
     } catch (error) {
       if (error.errno == -2) {
         return [];

@@ -18,14 +18,27 @@ class GitDatabase extends TextDatabase {
       if (stderr !== "") {
         throw new Error(`Error creating git repo: ${util.inspect({ stderr, stdout })}`)
       }
+      await fs.promises.writeFile(path.join(this.dir, ".gitattributes"), `* merge=union\n`)
       return true;
     }
     return false;
   }
 
   async commit(message) {
-    await execFile("git", ["add", "--all"])
-    console.log(await execFile("git", ["commit", "--message", message]));
+    await execFile("git", ["add", "--all"], { cwd: this.dir })
+    await execFile("git", ["commit", "--message", message], { cwd: this.dir });
+  }
+
+  async switchBranch(name) {
+    await execFile("git", ["checkout", name], { cwd: this.dir });
+  }
+
+  async createBranch(name) {
+    await execFile("git", ["checkout", "-b", name], { cwd: this.dir });
+  }
+
+  async merge(name) {
+    await execFile("git", ["merge", name], { cwd: this.dir });
   }
 }
 
