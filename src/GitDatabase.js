@@ -25,7 +25,7 @@ class GitDatabase extends TextDatabase {
 
   async commit(message) {
     await execFile("git", ["add", "--all"])
-    await execFile("git", ["commit", "--message", message]);
+    console.log(await execFile("git", ["commit", "--message", message]));
   }
 }
 
